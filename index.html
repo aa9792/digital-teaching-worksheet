@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>數位教學設計｜小組網頁學習單</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root{
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --ink:#243042;
+    --sub:#64748b;
+    --line:#dbe3ee;
+    --accent:#4f6bed;
+    --accent2:#eef2ff;
+    --soft:#f8fafc;
+    --ok:#18794e;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:"Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.65;
+  }
+  .topbar{
+    position:sticky; top:0; z-index:10;
+    background:rgba(255,255,255,.95);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width:980px; margin:auto;
+    padding:12px 20px;
+    display:flex; gap:10px; align-items:center; justify-content:space-between;
+  }
+  .brand{
+    font-weight:800; letter-spacing:.02em;
+  }
+  .actions{display:flex; gap:8px; flex-wrap:wrap}
+  button{
+    border:0; border-radius:10px; padding:10px 14px;
+    font-size:14px; font-weight:700; cursor:pointer;
+  }
+  .primary{background:var(--accent); color:#fff}
+  .ghost{background:#eef2f7; color:var(--ink)}
+  .danger{background:#fff0f0; color:#b42318}
+  .page{
+    max-width:980px; margin:28px auto; padding:0 18px 50px;
+  }
+  .hero{
+    background:linear-gradient(135deg,#ffffff 0%,#f0f4ff 100%);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:28px;
+    margin-bottom:18px;
+  }
+  .eyebrow{
+    color:var(--accent);
+    font-size:13px; font-weight:800; letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  h1{font-size:30px; margin:6px 0 8px; line-height:1.25}
+  .desc{color:var(--sub); margin:0}
+  .tip{
+    margin-top:18px;
+    background:#fff;
+    border-left:5px solid var(--accent);
+    padding:12px 14px;
+    border-radius:10px;
+    font-size:14px;
+  }
+  .meta-grid,.grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  .section{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:22px;
+    margin-top:16px;
+  }
+  .section h2{
+    font-size:19px; margin:0 0 4px;
+  }
+  .section .hint{
+    color:var(--sub); font-size:14px; margin-bottom:16px;
+  }
+  label{
+    display:block; font-size:14px; font-weight:800; margin:0 0 7px;
+  }
+  input, textarea, select{
+    width:100%;
+    border:1px solid #cfd8e5;
+    border-radius:11px;
+    padding:11px 12px;
+    font:inherit;
+    background:#fff;
+    color:var(--ink);
+    outline:none;
+  }
+  textarea{min-height:104px; resize:vertical}
+  input:focus,textarea:focus,select:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(79,107,237,.10);
+  }
+  .field{margin-bottom:14px}
+  .field:last-child{margin-bottom:0}
+  .check-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+  }
+  .check-item{
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:10px;
+    background:var(--soft);
+  }
+  .check-item input{width:auto; margin-right:6px}
+  .flow{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+  }
+  .flow .step{
+    background:var(--soft);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px;
+  }
+  .flow .step strong{
+    display:block; margin-bottom:6px; color:var(--accent);
+  }
+  .footer-note{
+    text-align:center; color:var(--sub);
+    margin-top:20px; font-size:13px;
+  }
+  .save-status{
+    font-size:13px; color:var(--ok); min-width:80px;
+  }
+  @media (max-width:760px){
+    .meta-grid,.grid2,.flow,.check-grid{grid-template-columns:1fr}
+    h1{font-size:24px}
+    .topbar-inner{align-items:flex-start; flex-direction:column}
+  }
+  @media print{
+    body{background:#fff}
+    .topbar,.no-print{display:none!important}
+    .page{max-width:none; margin:0; padding:0}
+    .hero,.section{
+      break-inside:avoid;
+      box-shadow:none;
+    }
+    textarea,input,select{
+      border:1px solid #aaa;
+      background:#fff!important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar no-print">
+  <div class="topbar-inner">
+    <div>
+      <div class="brand">數位教學設計｜小組學習單</div>
+      <div class="save-status" id="saveStatus">已啟用自動儲存</div>
+    </div>
+    <div class="actions">
+      <button class="ghost" onclick="window.print()">列印／另存 PDF</button>
+      <button class="primary" onclick="downloadPDF()">一鍵下載 PDF</button>
+      <button class="danger" onclick="clearForm()">清除重填</button>
+    </div>
+  </div>
+</div>
+
+<main class="page" id="worksheet">
+  <section class="hero">
+    <div class="eyebrow">65–85 分鐘｜小組數位教學設計</div>
+    <h1>把數位工具變成真正的學習設計</h1>
+    <p class="desc">請與組員共同完成一則完整的教學設計。重點不是「用了什麼工具」，而是「科技如何幫助學生學得更好」。</p>
+    <div class="tip">
+      最後請按右上角「一鍵下載 PDF」，將成果上傳至 Padlet。
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>01｜基本資料</h2>
+    <div class="hint">先界定教學情境，後續設計才會聚焦。</div>
+    <div class="meta-grid">
+      <div class="field">
+        <label>小組名稱</label>
+        <input id="groupName" data-save placeholder="例如：第三組／探索者小隊">
+      </div>
+      <div class="field">
+        <label>組員</label>
+        <input data-save placeholder="請輸入姓名">
+      </div>
+      <div class="field">
+        <label>教學主題</label>
+        <input id="topic" data-save placeholder="例如：水循環、分數、閱讀理解">
+      </div>
+      <div class="field">
+        <label>學習對象</label>
+        <input data-save placeholder="例如：國小五年級">
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>02｜小組人員分工</h2>
+    <div class="hint">每組最多4人。請先確認每位組員的主要任務，也可以依實際需要調整或兼任。</div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>組員1｜姓名</label>
+        <input data-save placeholder="請輸入姓名">
+        <label style="margin-top:8px;">主要分工</label>
+        <select data-save>
+          <option value="">請選擇</option>
+          <option>組長／時間管理</option>
+          <option>教學設計統整</option>
+          <option>數位工具操作</option>
+          <option>紀錄與PDF整理</option>
+          <option>發表與回饋</option>
+          <option>其他／自訂</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>組員2｜姓名</label>
+        <input data-save placeholder="請輸入姓名">
+        <label style="margin-top:8px;">主要分工</label>
+        <select data-save>
+          <option value="">請選擇</option>
+          <option>組長／時間管理</option>
+          <option>教學設計統整</option>
+          <option>數位工具操作</option>
+          <option>紀錄與PDF整理</option>
+          <option>發表與回饋</option>
+          <option>其他／自訂</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>組員3｜姓名</label>
+        <input data-save placeholder="請輸入姓名">
+        <label style="margin-top:8px;">主要分工</label>
+        <select data-save>
+          <option value="">請選擇</option>
+          <option>組長／時間管理</option>
+          <option>教學設計統整</option>
+          <option>數位工具操作</option>
+          <option>紀錄與PDF整理</option>
+          <option>發表與回饋</option>
+          <option>其他／自訂</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>組員4｜姓名</label>
+        <input data-save placeholder="請輸入姓名；若無第4位可留白">
+        <label style="margin-top:8px;">主要分工</label>
+        <select data-save>
+          <option value="">請選擇</option>
+          <option>組長／時間管理</option>
+          <option>教學設計統整</option>
+          <option>數位工具操作</option>
+          <option>紀錄與PDF整理</option>
+          <option>發表與回饋</option>
+          <option>其他／自訂</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="tip" style="margin-top:8px;">
+      建議原則：每位組員都要有明確任務；若只有2–3人，可一人兼任兩項工作。
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>03｜學習目標</h2>
+    <div class="hint">先寫「學生最後要會什麼」，不要先寫工具名稱。</div>
+    <div class="field">
+      <label>學生完成活動後，應能……</label>
+      <textarea data-save placeholder="例如：能比較不同材料的隔熱效果，並根據數據提出合理解釋。"></textarea>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>04｜學生要做什麼？</h2>
+    <div class="hint">請把學習歷程拆成幾個清楚的行動。</div>
+    <div class="flow">
+      <div class="step"><strong>步驟 1</strong><textarea data-save placeholder="例如：預測"></textarea></div>
+      <div class="step"><strong>步驟 2</strong><textarea data-save placeholder="例如：操作／蒐集資料"></textarea></div>
+      <div class="step"><strong>步驟 3</strong><textarea data-save placeholder="例如：分析／比較"></textarea></div>
+      <div class="step"><strong>步驟 4</strong><textarea data-save placeholder="例如：解釋／發表"></textarea></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>05｜學習證據</h2>
+    <div class="hint">你要看到什麼，才能知道學生真的學會了？</div>
+    <textarea data-save placeholder="例如：數據表、圖表、口頭解釋、小組作品、學生的推論文字……"></textarea>
+  </section>
+
+  <section class="section">
+    <h2>06｜數位科技扮演什麼角色？</h2>
+    <div class="hint">勾選主要功能，再寫出你們選擇的工具。</div>
+    <div class="check-grid">
+      <label class="check-item"><input type="checkbox" data-save> 看見</label>
+      <label class="check-item"><input type="checkbox" data-save> 記錄</label>
+      <label class="check-item"><input type="checkbox" data-save> 分析</label>
+      <label class="check-item"><input type="checkbox" data-save> 表達</label>
+      <label class="check-item"><input type="checkbox" data-save> 互動</label>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="field">
+        <label>選擇的數位工具</label>
+        <textarea data-save placeholder="例如：Padlet、Google Sheet、CODAP、Canva、ChatGPT……"></textarea>
+      </div>
+      <div class="field">
+        <label>科技帶來的學習價值</label>
+        <textarea data-save placeholder="不是寫『比較方便』，請說明它如何幫助觀察、分析、回饋或表達。"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>07｜AI 要不要加入？</h2>
+    <div class="hint">AI不是必須。請判斷它是否真的增加學習價值。</div>
+    <div class="grid2">
+      <div class="field">
+        <label>AI 可以協助什麼？</label>
+        <textarea data-save placeholder="例如：整理資料、提供初步回饋、模擬對話、提出問題……"></textarea>
+      </div>
+      <div class="field">
+        <label>學生仍然必須自己學會什麼？</label>
+        <textarea data-save placeholder="例如：判斷、查證、解釋、做決定、表達自己的觀點……"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>08｜教師的角色</h2>
+    <div class="hint">教師在哪些關鍵時刻需要提問、示範、提醒或回饋？</div>
+    <textarea data-save placeholder="例如：在學生分析數據前，先引導判讀座標軸與變化趨勢；發表時追問『你的證據是什麼？』"></textarea>
+  </section>
+
+  <section class="section">
+    <h2>09｜最重要的一題</h2>
+    <div class="hint">請小組一起討論後再作答。</div>
+    <div class="field">
+      <label>如果拿掉這個數位工具，這堂課會少掉什麼？</label>
+      <textarea data-save placeholder="如果答案是『其實沒差』，請重新思考是否真的需要使用這項科技。"></textarea>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>10｜一句話說明我們的設計</h2>
+    <div class="hint">等等分享時，就用這段話開始。</div>
+    <textarea data-save placeholder="我們希望學生學會＿＿＿＿；因此安排學生＿＿＿＿；使用＿＿＿＿，因為它能幫助學生＿＿＿＿。"></textarea>
+  </section>
+
+  <div class="footer-note">
+    完成後請下載 PDF，並依講師指定方式上傳至 Padlet。
+  </div>
+</main>
+
+<script>
+const fields = [...document.querySelectorAll('[data-save]')];
+const KEY = 'digital_learning_worksheet_v1';
+const statusEl = document.getElementById('saveStatus');
+
+function save(){
+  const data = fields.map(el => ({
+    type: el.type,
+    value: el.type === 'checkbox' ? el.checked : el.value
+  }));
+  localStorage.setItem(KEY, JSON.stringify(data));
+  statusEl.textContent = '已自動儲存';
+  clearTimeout(window._saveTimer);
+  window._saveTimer = setTimeout(()=>statusEl.textContent='已啟用自動儲存', 1200);
+}
+function load(){
+  const raw = localStorage.getItem(KEY);
+  if(!raw) return;
+  try{
+    const data = JSON.parse(raw);
+    fields.forEach((el,i)=>{
+      if(!data[i]) return;
+      if(el.type === 'checkbox') el.checked = !!data[i].value;
+      else el.value = data[i].value || '';
+    });
+  }catch(e){}
+}
+fields.forEach(el=>{
+  el.addEventListener('input', save);
+  el.addEventListener('change', save);
+});
+
+function clearForm(){
+  if(!confirm('確定要清除所有已填內容嗎？')) return;
+  fields.forEach(el=>{
+    if(el.type === 'checkbox') el.checked = false;
+    else el.value = '';
+  });
+  localStorage.removeItem(KEY);
+  statusEl.textContent = '內容已清除';
+}
+
+async function downloadPDF(){
+  const btns = document.querySelector('.topbar');
+  const group = document.getElementById('groupName').value.trim() || '小組';
+  const topic = document.getElementById('topic').value.trim() || '數位教學設計';
+  const filename = `${group}_${topic}_數位教學設計.pdf`;
+
+  if(typeof html2pdf === 'undefined'){
+    alert('PDF元件尚未載入，將改用瀏覽器列印功能，請選擇「另存為 PDF」。');
+    window.print();
+    return;
+  }
+
+  const opt = {
+    margin: [8,8,8,8],
+    filename: filename,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all','css','legacy'] }
+  };
+
+  statusEl.textContent = '正在產生 PDF…';
+  try{
+    await html2pdf().set(opt).from(document.getElementById('worksheet')).save();
+    statusEl.textContent = 'PDF 已下載';
+  }catch(err){
+    alert('自動下載未成功，將改用瀏覽器列印功能，請選擇「另存為 PDF」。');
+    window.print();
+  }
+}
+load();
+</script>
+</body>
+</html>
